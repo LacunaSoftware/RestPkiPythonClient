@@ -3,10 +3,10 @@ class StandardSecurityContexts:
     PKI_ITALY = 'c438b17e-4862-446b-86ad-6f85734f0bfe'
     WINDOWS_SERVER = '3881384c-a54d-45c5-bbe9-976b674f5ec7'
 
-    LACUNA_TEST = "803517ad-3bbc-4169-b085-60053a8f6dbf"
+    LACUNA_TEST = '803517ad-3bbc-4169-b085-60053a8f6dbf'
 
     def __init__(self):
-        return
+        pass
 
 
 __all__ = ['StandardSecurityContexts']

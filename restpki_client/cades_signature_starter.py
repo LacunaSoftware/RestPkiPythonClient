@@ -1,50 +1,104 @@
 import base64
 
+from .signature_starter import SignatureStarter
+from .signature_start_result import SignatureStartResult
 
-class CadesSignatureStarter:
-    content_to_sign = None
-    security_context_id = None
-    signature_policy_id = None
-    cms_to_cosign_bytes = None
-    encapsulate_content = None
-    callback_argument = None
-    _client = None
+
+class CadesSignatureStarter(SignatureStarter):
+    _file_to_sign_content = None
+    _cms_to_cosign_content = None
+    _encapsulate_content = True
 
     def __init__(self, client):
-        self._client = client
+        SignatureStarter.__init__(self, client)
+
+    # region set_file_to_sign
+
+    def set_file_to_sign_from_path(self, path):
+        with open(path, 'rb') as f:
+            self._file_to_sign_content = f.read()
+
+    def set_file_to_sign_from_content_raw(self, content_raw):
+        self._file_to_sign_content = content_raw
+
+    def set_file_to_sign_from_content_base64(self, content_base64):
+        self._file_to_sign_content = base64.b64decode(content_base64)
 
     def set_file_to_sign_path(self, path):
-        f = open(path, 'rb')
-        self.content_to_sign = f.read()
-        f.close()
+        self.set_file_to_sign_from_path(path)
+
+    def set_file_to_sign(self, path):
+        self.set_file_to_sign_path(path)
+
+    def set_file_to_sign_content(self, content_raw):
+        self.set_file_to_sign_from_content_raw(content_raw)
+
+    # endregion
+
+    # region set_cms_to_cosign
+
+    def set_cms_to_cosign_from_path(self, path):
+        with open(path, 'rb') as f:
+            self._cms_to_cosign_content = f.read()
+
+    def set_cms_to_cosign_from_content_raw(self, content_raw):
+        self._cms_to_cosign_content = content_raw
+
+    def set_cms_to_cosign_from_content_base64(self, content_base64):
+        self._cms_to_cosign_content = base64.b64decode(content_base64)
 
     def set_cms_to_cosign_path(self, path):
-        f = open(path, 'rb')
-        self.cms_to_cosign_bytes = f.read()
-        f.close()
+        self.set_cms_to_cosign_from_path(path)
+
+    def set_cms_to_cosign(self, path):
+        self.set_cms_to_cosign_path(path)
+
+    def set_cms_to_cosign_content(self, content_raw):
+        self.set_cms_to_cosign_from_content_raw(content_raw)
+
+    # endregion
+
+    @property
+    def encapsulate_content(self):
+        return self._encapsulate_content
+
+    @encapsulate_content.setter
+    def encapsulate_content(self, value):
+        self._encapsulate_content = value
 
     def start_with_webpki(self):
-        if self.content_to_sign is None and self.cms_to_cosign_bytes is None:
+        response = self._start_common()
+
+        return SignatureStartResult(response.get('token', None),
+                                    response.get('certificate', None))
+
+    def _start_common(self):
+
+        if not self._file_to_sign_content and not self._cms_to_cosign_content:
             raise Exception(
                 'The content to sign was not set and no CMS to be co-signed was'
                 ' given'
             )
 
-        if self.signature_policy_id is None:
+        if not self._signature_policy_id:
             raise Exception('The signature policy was not set')
 
-        data = dict()
-        data['signaturePolicyId'] = self.signature_policy_id
-        data['securityContextId'] = self.security_context_id
-        data['callbackArgument'] = self.callback_argument
-        data['encapsulateContent'] = self.encapsulate_content
-        if self.content_to_sign is not None:
-            data['contentToSign'] = base64.b64encode(self.content_to_sign)
-        if self.cms_to_cosign_bytes is not None:
-            data['cmsToCoSign'] = base64.b64encode(self.cms_to_cosign_bytes)
+        request = {
+            'signaturePolicyId': self._signature_policy_id,
+            'securityContextId': self._security_context_id,
+            'callbackArgument': self._callback_argument,
+            'encapsulateContent': self._encapsulate_content
+        }
+        if self._file_to_sign_content:
+            request['contentToSign'] = \
+                base64.b64encode(self._file_to_sign_content)
+        if self._cms_to_cosign_content:
+            request['cmsToCoSign'] = \
+                base64.b64encode(self._cms_to_cosign_content)
+        if self._signer_certificate:
+            request['certicate'] = base64.b64encode(self._signer_certificate)
 
-        response = self._client.post('Api/CadesSignatures', data=data)
-        return response.json().get('token', None)
+        return self._client.post('Api/CadesSignatures', data=request)
 
 
 __all__ = ['CadesSignatureStarter']
