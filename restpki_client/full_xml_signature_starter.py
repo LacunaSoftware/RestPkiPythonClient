@@ -1,18 +1,24 @@
 from .xml_signature_starter import XmlSignatureStarter
+from .signature_start_result import SignatureStartResult
 
 
 class FullXmlSignatureStarter(XmlSignatureStarter):
+
     def __init__(self, client):
-        super(FullXmlSignatureStarter, self).__init__(client)
+        XmlSignatureStarter.__init__(self, client)
 
     def start_with_webpki(self):
-        if self.xml_content is None:
+        XmlSignatureStarter._verify_common_parameters(self, True)
+
+        if not self._xml_to_sign_content:
             raise Exception('The XML to sign was not set')
 
-        data = super(FullXmlSignatureStarter, self).get_common_request_data()
+        request = XmlSignatureStarter._get_request(self)
         response = self._client.post('Api/XmlSignatures/FullXmlSignature',
-                                     data=data)
-        return response.json().get('token', None)
+                                     data=request)
+
+        return SignatureStartResult(response.get('token', None),
+                                    response.get('certificate', None))
 
 
 __all__ = ['FullXmlSignatureStarter']

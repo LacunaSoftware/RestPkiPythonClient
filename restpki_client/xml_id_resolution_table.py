@@ -8,24 +8,36 @@ class XmlIdResolutionTable:
         self._element_id_attributes = []
         self._global_id_attributes = []
 
-    def add_global_id_attribute(self, id_attribute_local_name,
+    def add_global_id_attribute(self,
+                                id_attribute_local_name,
                                 id_attribute_namespace=None):
-        self._global_id_attributes.append({'localName': id_attribute_local_name,
-                                           'namespace': id_attribute_namespace})
+        self._global_id_attributes.append({
+            'localName': id_attribute_local_name,
+            'namespace': id_attribute_namespace
+        })
 
-    def set_element_id_attribute(self, element_local_name, element_namespace,
+    def set_element_id_attribute(self,
+                                 element_local_name,
+                                 element_namespace,
                                  id_attribute_local_name,
                                  id_attribute_namespace=None):
-        self._element_id_attributes.append(
-            {'element': {'localName': element_local_name,
-                         'namespace': element_namespace},
-             'attribute': {'localName': id_attribute_local_name,
-                           'namespace': id_attribute_namespace}})
+        self._element_id_attributes.append({
+            'element': {
+                'localName': element_local_name,
+                'namespace': element_namespace
+            },
+            'attribute': {
+                'localName': id_attribute_local_name,
+                'namespace': id_attribute_namespace
+            }
+        })
 
     def to_model(self):
-        return {'includeXmlIdAttribute': self._include_xml_id_attribute,
-                'elementIdAttributes': self._element_id_attributes,
-                'globalIdAttributes': self._global_id_attributes}
+        return {
+            'includeXmlIdAttribute': self._include_xml_id_attribute,
+            'elementIdAttributes': self._element_id_attributes,
+            'globalIdAttributes': self._global_id_attributes
+        }
 
 
 __all__ = ['XmlIdResolutionTable']

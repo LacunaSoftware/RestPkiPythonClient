@@ -1,68 +1,42 @@
-import base64
+from .signature_finisher import SignatureFinisher
+from .signature_result import SignatureResult
 
 
-class CadesSignatureFinisher:
-    token = None
-    _client = None
-    _done = False
-    _cms = None
-    _certificate = None
-    _callback_argument = None
+class CadesSignatureFinisher(SignatureFinisher):
 
-    def __init__(self, restpki_client):
-        self._client = restpki_client
+    def __init__(self, client):
+        SignatureFinisher.__init__(self, client)
 
     def finish(self):
-        if not self.token:
+
+        if not self._token:
             raise Exception('The token was not set')
 
-        response = self._client.post(
-            'Api/CadesSignatures/%s/Finalize' % self.token).json()
-        self._cms = base64.b64decode(response.get('cms', None))
-        self._certificate = response.get('certificate', None)
-        self._callback_argument = response.get('callbackArgument', None)
-        self._done = True
+        if not self._signature:
+            response = self._client.post(
+                'Api/CadesSignatures/%s/Finalize' % self._token)
 
-    @property
-    def cms(self):
-        if not self._done:
-            raise Exception(
-                'The property "cms" can only be called after calling the'
-                ' finish() method'
+            return SignatureResult(
+                self._client,
+                response.get('cms', None),
+                response.get('certificate', None),
+                response.get('callbackArgument', None)
             )
 
-        return self._cms
+        else:
+            request = dict()
+            request['signature'] = self._signature
 
-    @property
-    def certificate(self):
-        if not self._done:
-            raise Exception(
-                'The property "certificate" can only be called after calling'
-                ' the finish() method'
+            response = self._client.post(
+                'Api/CadesSignatures/%s/SignedBytes' % self._token,
+                data=request)
+
+            return SignatureResult(
+                self._client,
+                response.get('cms', None),
+                response.get('certificate', None),
+                response.get('callbackArgument', None)
             )
-
-        return self._certificate
-
-    @property
-    def callback_argument(self):
-        if not self._done:
-            raise Exception(
-                'The property "callback_argument" can only be called after'
-                ' calling the finish() method'
-            )
-
-        return self._callback_argument
-
-    def write_cms(self, path):
-        if not self._done:
-            raise Exception(
-                'The method write_cms() can only be called after calling the'
-                ' finish() method'
-            )
-
-        f = open(path, 'wb')
-        f.write(self._cms)
-        f.close()
 
 
 __all__ = ['CadesSignatureFinisher']

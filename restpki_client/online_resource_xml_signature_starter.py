@@ -1,22 +1,27 @@
 from .xml_signature_starter import XmlSignatureStarter
+from .signature_start_result import SignatureStartResult
 
 
 class OnlineResourceXmlSignatureStarter(XmlSignatureStarter):
-    resource_uri = None
+    _resource_uri = None
 
     def __init__(self, client):
-        super(OnlineResourceXmlSignatureStarter, self).__init__(client)
+        XmlSignatureStarter.__init__(self, client)
 
     def start_with_webpki(self):
-        if self.resource_uri is None or self.resource_uri == '':
+        XmlSignatureStarter._verify_common_parameters(self, True)
+
+        if not self._resource_uri or len(self._resource_uri) == 0:
             raise Exception('The online resource URI to sign was not set')
 
-        data = super(OnlineResourceXmlSignatureStarter,
-                     self).get_common_request_data()
-        data['resourceToSignUri'] = self.resource_uri
+        request = XmlSignatureStarter._get_request(self)
+        request['resourceToSignUri'] = self._resource_uri
+
         response = self._client.post(
-            'Api/XmlSignatures/OnlineResourceXmlSignature', data=data)
-        return response.json().get('token', None)
+            'Api/XmlSignatures/OnlineResourceXmlSignature', data=request)
+
+        return SignatureStartResult(response.get('token', None),
+                                    response.get('certificate', None))
 
 
 __all__ = ['OnlineResourceXmlSignatureStarter']
