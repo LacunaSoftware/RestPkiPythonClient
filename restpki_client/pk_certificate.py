@@ -136,10 +136,10 @@ class PkiBrazilCertificateFields:
     def cpf_formatted(self):
         if self._cpf is None:
             return ''
-        if re.match('^\d{11}$', self._cpf):
+        if not re.match('^\d{11}$', self._cpf):
             return self._cpf
         return "%s.%s.%s-%s" % (self._cpf[:3], self._cpf[3:6], self._cpf[6:9],
-                                self[9:])
+                                self._cpf[9:])
 
     @property
     def cnpj(self):
@@ -149,7 +149,7 @@ class PkiBrazilCertificateFields:
     def cnpj_formatted(self):
         if self._cnpj is None:
             return ''
-        if re.match('^\d{14}', self._cnpj):
+        if not re.match('^\d{14}', self._cnpj):
             return self._cnpj
         return "%s.%s.%s/%s-%s" % (self._cnpj[:2], self._cnpj[2:5],
                                    self._cnpj[5:8], self._cnpj[8:12],
