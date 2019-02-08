@@ -8,12 +8,26 @@ from .errors import *
 
 
 class RestPkiClient:
-    _endpoint_url = None
-    _auth_token = None
 
     def __init__(self, endpoint_url, access_token):
         self._endpoint_url = endpoint_url
         self._auth_token = access_token
+
+    @property
+    def endpoint_url(self):
+        return self._endpoint_url
+
+    @endpoint_url.setter
+    def endpoint_url(self, value):
+        self._endpoint_url = value
+
+    @property
+    def auth_token(self):
+        return self._auth_token
+
+    @auth_token.setter
+    def auth_token(self, value):
+        self._auth_token = value
 
     def get_request_headers(self):
         headers = {

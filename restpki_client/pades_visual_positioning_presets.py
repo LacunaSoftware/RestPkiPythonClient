@@ -2,7 +2,7 @@ class PadesVisualPositioningPresets:
     cached_presets = dict()
 
     def __init__(self):
-        return
+        pass
 
     @classmethod
     def get_footnote(cls, client, page_number=None, rows=None):
@@ -15,8 +15,7 @@ class PadesVisualPositioningPresets:
             url_segment += '&' if page_number else '?'
             url_segment += 'rows=%s' % rows
 
-        return PadesVisualPositioningPresets._get_preset(client,
-                                                         url_segment)
+        return PadesVisualPositioningPresets._get_preset(client, url_segment)
 
     @classmethod
     def get_new_page(cls, client):

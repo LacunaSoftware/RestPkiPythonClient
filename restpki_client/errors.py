@@ -1,7 +1,4 @@
 class RestBaseError(Exception):
-    _name = None
-    _verb = None
-    _url = None
 
     def __init__(self, name, message, verb, url):
         Exception.__init__(self, message)
@@ -13,18 +10,28 @@ class RestBaseError(Exception):
     def name(self):
         return self._name
 
+    @name.setter
+    def name(self, value):
+        self._name = value
+
     @property
     def verb(self):
         return self._verb
+
+    @verb.setter
+    def verb(self, value):
+        self._verb = value
 
     @property
     def url(self):
         return self._url
 
+    @url.setter
+    def url(self, value):
+        self._url = value
+
 
 class RestError(RestBaseError):
-    _status_code = None
-    _error_message = None
 
     def __init__(self, verb, url, status_code, error_message=None):
         message = "REST action %s %s returned HTTP error %s" % \
@@ -40,14 +47,20 @@ class RestError(RestBaseError):
     def status_code(self):
         return self._status_code
 
+    @status_code.setter
+    def status_code(self, value):
+        self._status_code = value
+
     @property
     def error_message(self):
         return self._error_message
 
+    @error_message.setter
+    def error_message(self, value):
+        self._error_message = value
+
 
 class RestPkiError(RestBaseError):
-    _error_code = None
-    _detail = None
 
     def __init__(self, verb, url, error_code, detail):
         message = "REST PKI action %s %s error: %s" % (verb, url, error_code)
@@ -62,9 +75,17 @@ class RestPkiError(RestBaseError):
     def error_code(self):
         return self._error_code
 
+    @error_code.setter
+    def error_code(self, value):
+        self._error_code = value
+
     @property
     def detail(self):
         return self._detail
+
+    @detail.setter
+    def detail(self, value):
+        self._detail = value
 
 
 class RestUnreachableError(RestBaseError):
@@ -78,7 +99,6 @@ class RestUnreachableError(RestBaseError):
 
 
 class ValidationError(RestBaseError):
-    _validation_results = None
 
     def __init__(self, verb, url, validation_results):
         RestBaseError.__init__(self,
@@ -86,10 +106,15 @@ class ValidationError(RestBaseError):
                                str(validation_results),
                                verb,
                                url)
+        self._validation_results = validation_results
 
     @property
     def validation_results(self):
         return self._validation_results
+
+    @validation_results.setter
+    def validation_results(self, value):
+        self._validation_results = value
 
 
 __all__ = [

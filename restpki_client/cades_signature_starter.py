@@ -5,12 +5,16 @@ from .signature_start_result import SignatureStartResult
 
 
 class CadesSignatureStarter(SignatureStarter):
-    _file_to_sign_content = None
-    _cms_to_cosign_content = None
-    _encapsulate_content = True
 
     def __init__(self, client):
         SignatureStarter.__init__(self, client)
+        self._file_to_sign_content = None
+        self._cms_to_cosign_content = None
+        self._encapsulate_content = True
+
+    @property
+    def file_to_sign_content(self):
+        return self._file_to_sign_content
 
     # region set_file_to_sign
 
@@ -34,6 +38,10 @@ class CadesSignatureStarter(SignatureStarter):
         self.set_file_to_sign_from_content_raw(content_raw)
 
     # endregion
+
+    @property
+    def cms_to_cosign_content(self):
+        return self._cms_to_cosign_content
 
     # region set_cms_to_cosign
 

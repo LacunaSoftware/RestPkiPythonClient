@@ -5,12 +5,18 @@ from abc import abstractmethod
 class SignatureFinisher:
     __metaclass__ = ABCMeta
 
-    _client = None
-    _token = None
-    _signature = None
-
     def __init__(self, client):
         self._client = client
+        self._token = None
+        self._signature = None
+
+    @property
+    def client(self):
+        return self._client
+
+    @client.setter
+    def client(self, value):
+        self._client = value
 
     @property
     def token(self):

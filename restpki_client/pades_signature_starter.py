@@ -5,15 +5,19 @@ from .signature_start_result import SignatureStartResult
 
 
 class PadesSignatureStarter(SignatureStarter):
-    _bypass_marks_if_signed = True
-    _pdf_marks = []
-    _pdf_to_sign_content = None
-    _measurement_units = None
-    _page_optimization = None
-    _visual_representation = None
 
     def __init__(self, client):
         SignatureStarter.__init__(self, client)
+        self._bypass_marks_if_signed = True
+        self._pdf_marks = []
+        self._pdf_to_sign_content = None
+        self._measurement_units = None
+        self._page_optimization = None
+        self._visual_representation = None
+
+    @property
+    def pdf_to_sign_content(self):
+        return self._pdf_to_sign_content
 
     # region set_pdf_to_sign
 
@@ -37,14 +41,6 @@ class PadesSignatureStarter(SignatureStarter):
         self.set_pdf_to_sign_from_content_raw(content_raw)
 
     # endregion
-
-    @property
-    def visual_representation(self):
-        return self._visual_representation
-
-    @visual_representation.setter
-    def visual_representation(self, value):
-        self._visual_representation = value
 
     @property
     def bypass_marks_if_signed(self):
@@ -77,6 +73,14 @@ class PadesSignatureStarter(SignatureStarter):
     @page_optimization.setter
     def page_optimization(self, value):
         self._page_optimization = value
+
+    @property
+    def visual_representation(self):
+        return self._visual_representation
+
+    @visual_representation.setter
+    def visual_representation(self, value):
+        self._visual_representation = value
 
     def start_with_webpki(self):
         response = self._start_common()

@@ -3,11 +3,11 @@ from .signature_start_result import SignatureStartResult
 
 
 class XmlElementSignatureStarter(XmlSignatureStarter):
-    _to_sign_element_id = None
-    _id_resolution_table = None
 
     def __init__(self, client):
         XmlSignatureStarter.__init__(self, client)
+        self._to_sign_element_id = None
+        self._id_resolution_table = None
 
     @property
     def to_sign_element_id(self):

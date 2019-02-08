@@ -1,8 +1,15 @@
 class NamespaceManager:
-    _namespaces = []
 
     def __init__(self):
-        pass
+        self._namespaces = []
+
+    @property
+    def namespaces(self):
+        return self._namespaces
+
+    @namespaces.setter
+    def namespaces(self, value):
+        self._namespaces = value
 
     def add_namespace(self, prefix, uri):
         if not prefix or not uri:
@@ -10,10 +17,6 @@ class NamespaceManager:
 
         ns = {'prefix': prefix, 'uri': uri}
         self._namespaces.append(ns)
-
-    @property
-    def namespaces(self):
-        return self._namespaces
 
 
 __all__ = ['NamespaceManager']

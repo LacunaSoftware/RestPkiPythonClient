@@ -1,12 +1,33 @@
 class XmlIdResolutionTable:
-    _include_xml_id_attribute = None
-    _element_id_attributes = None
-    _global_id_attributes = None
 
     def __init__(self, include_xml_id_attribute=True):
         self._include_xml_id_attribute = include_xml_id_attribute
         self._element_id_attributes = []
         self._global_id_attributes = []
+
+    @property
+    def include_xml_id_attribute(self):
+        return self._include_xml_id_attribute
+
+    @include_xml_id_attribute.setter
+    def include_xml_id_attribute(self, value):
+        self._include_xml_id_attribute = value
+
+    @property
+    def element_id_attributes(self):
+        return self._element_id_attributes
+
+    @element_id_attributes.setter
+    def element_id_attributes(self, value):
+        self._element_id_attributes = value
+
+    @property
+    def global_id_attributes(self):
+        return self._global_id_attributes
+
+    @global_id_attributes.setter
+    def global_id_attributes(self, value):
+        self._global_id_attributes = value
 
     def add_global_id_attribute(self,
                                 id_attribute_local_name,

@@ -3,11 +3,19 @@ from .signature_start_result import SignatureStartResult
 
 
 class DetachedResourceXmlSignatureStarter(XmlSignatureStarter):
-    _resource_content = None
-    _resource_uri = None
 
     def __init__(self, client):
         XmlSignatureStarter.__init__(self, client)
+        self._resource_content = None
+        self._resource_uri = None
+
+    @property
+    def resource_content(self):
+        return self._resource_content
+
+    @property
+    def resource_uri(self):
+        return self._resource_uri
 
     # region set_to_sign_detached_resource
 

@@ -5,14 +5,20 @@ from abc import abstractmethod
 class SignatureStarter:
     __metaclass__ = ABCMeta
 
-    _client = None
-    _signer_certificate = None
-    _signature_policy_id = None
-    _security_context_id = None
-    _callback_argument = None
-
     def __init__(self, client):
         self._client = client
+        self._signer_certificate = None
+        self._signature_policy_id = None
+        self._security_context_id = None
+        self._callback_argument = None
+
+    @property
+    def client(self):
+        return self._client
+
+    @client.setter
+    def client(self, value):
+        self._client = value
 
     @property
     def signer_certificate(self):

@@ -3,10 +3,17 @@ from .pk_certificate import PKCertificate
 
 
 class Authentication:
-    _client = None
 
     def __init__(self, client):
         self._client = client
+
+    @property
+    def client(self):
+        return self._client
+
+    @client.setter
+    def client(self, value):
+        self._client = value
 
     def start_with_webpki(self, security_context_id):
         request = {'securityContextId': security_context_id}
@@ -19,10 +26,11 @@ class Authentication:
 
 
 class AuthenticationResult:
-    _certificate = None
-    _validation_results = None
 
     def __init__(self, model):
+        self._certificate = None
+        self._validation_results = None
+
         certificate = model.get('certificate', None)
         validation_results = model.get('validationResults', None)
         if certificate is not None:
@@ -35,9 +43,17 @@ class AuthenticationResult:
     def certificate(self):
         return self._certificate
 
+    @certificate.setter
+    def certificate(self, value):
+        self._certificate = value
+
     @property
     def validation_results(self):
         return self._validation_results
+
+    @validation_results.setter
+    def validation_results(self, value):
+        self._validation_results = value
 
 
 __all__ = ['Authentication', 'AuthenticationResult']

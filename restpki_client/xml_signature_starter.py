@@ -7,14 +7,17 @@ from .signature_starter import SignatureStarter
 class XmlSignatureStarter(SignatureStarter):
     __metaclass__ = ABCMeta
 
-    _xml_to_sign_content = None
-    _signature_element_id = None
-    _signature_element_location_xpath = None
-    _signature_element_location_nsm = None
-    _signature_element_location_insertion_option = None
-
     def __init__(self, client):
         SignatureStarter.__init__(self, client)
+        self._xml_to_sign_content = None
+        self._signature_element_id = None
+        self._signature_element_location_xpath = None
+        self._signature_element_location_nsm = None
+        self._signature_element_location_insertion_option = None
+
+    @property
+    def xml_to_sign(self):
+        return self._xml_to_sign_content
 
     # region set_xml_to_sign
 
@@ -36,14 +39,6 @@ class XmlSignatureStarter(SignatureStarter):
 
     # endregion
 
-    def set_signature_element_location(self,
-                                       xpath,
-                                       insertion_option,
-                                       namespace_manager):
-        self._signature_element_location_xpath = xpath
-        self._signature_element_location_insertion_option = insertion_option
-        self._signature_element_location_nsm = namespace_manager
-
     @property
     def signature_element_id(self):
         return self._signature_element_id
@@ -51,6 +46,26 @@ class XmlSignatureStarter(SignatureStarter):
     @signature_element_id.setter
     def signature_element_id(self, value):
         self._signature_element_id = value
+
+    @property
+    def signature_element_location_xpath(self):
+        return self._signature_element_location_xpath
+
+    @property
+    def signature_element_location_nsm(self):
+        return self._signature_element_location_nsm
+
+    @property
+    def signature_element_location_insertion_option(self):
+        return self._signature_element_location_insertion_option
+
+    def set_signature_element_location(self,
+                                       xpath,
+                                       insertion_option,
+                                       namespace_manager):
+        self._signature_element_location_xpath = xpath
+        self._signature_element_location_insertion_option = insertion_option
+        self._signature_element_location_nsm = namespace_manager
 
     def _verify_common_parameters(self, with_webpki=False):
         if not with_webpki and not self._signer_certificate:

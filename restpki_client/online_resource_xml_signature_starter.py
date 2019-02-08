@@ -3,10 +3,10 @@ from .signature_start_result import SignatureStartResult
 
 
 class OnlineResourceXmlSignatureStarter(XmlSignatureStarter):
-    _resource_uri = None
 
     def __init__(self, client):
         XmlSignatureStarter.__init__(self, client)
+        self._resource_uri = None
 
     def start_with_webpki(self):
         XmlSignatureStarter._verify_common_parameters(self, True)
