@@ -1,4 +1,4 @@
-class PadesVisualPositioningPresets:
+class PadesVisualPositioningPresets(object):
     cached_presets = dict()
 
     def __init__(self):

@@ -2,7 +2,7 @@ import six
 
 
 @six.python_2_unicode_compatible
-class ValidationResults:
+class ValidationResults(object):
 
     def __init__(self, model):
         self._errors = None
@@ -142,7 +142,7 @@ class ValidationItem:
         self._inner_validation_results = None
 
         if model.get('innerValidationResults', None) is not None:
-            self.innerValidationResults = ValidationResults(
+            self._inner_validation_results = ValidationResults(
                 model['innerValidationResults'])
 
     @property
@@ -199,4 +199,7 @@ class ValidationItem:
         return text
 
 
-__all__ = ['ValidationResults', 'ValidationItem']
+__all__ = [
+    'ValidationResults',
+    'ValidationItem'
+]

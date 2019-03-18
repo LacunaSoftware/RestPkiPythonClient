@@ -1,4 +1,4 @@
-class StandardSignaturePolicies:
+class StandardSignaturePolicies(object):
     PADES_BASIC = '78d20b33-014d-440e-ad07-929f05d00cdf'
     PADES_BASIC_WITH_PKI_BRAZIL_CERTS = '3fec800c-366c-49bf-82c5-2e72154e70f6'
     PADES_T_WITH_PKI_BRAZIL_CERTS = '6a39aeea-a2d0-4754-bf8c-19da15296ddb'

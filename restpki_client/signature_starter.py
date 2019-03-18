@@ -2,7 +2,7 @@ from abc import ABCMeta
 from abc import abstractmethod
 
 
-class SignatureStarter:
+class SignatureStarter(object):
     __metaclass__ = ABCMeta
 
     def __init__(self, client):

@@ -6,11 +6,11 @@ class SignatureResult(FileResult):
 
     def __init__(self,
                  client,
-                 file_base64,
+                 file_model,
                  certificate,
                  callback_argument=None):
 
-        FileResult.__init__(self, client, file_base64)
+        super(SignatureResult, self).__init__(client, file_model)
         self._certificate = None
         if certificate is not None:
             self._certificate = PKCertificate(certificate)

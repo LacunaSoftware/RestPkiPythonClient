@@ -1,42 +1,21 @@
+from .apis import Apis
+from .rest_pki_client import _get_api_version
 from .signature_finisher import SignatureFinisher
-from .signature_result import SignatureResult
 
 
 class CadesSignatureFinisher(SignatureFinisher):
 
     def __init__(self, client):
-        SignatureFinisher.__init__(self, client)
+        super(CadesSignatureFinisher, self).__init__(client)
 
-    def finish(self):
+    def _check_compatibility(self):
+        api_version = _get_api_version(self._client, Apis.COMPLETE_CADES)
+        if api_version < 2:
+            raise Exception('The CadesSignatureFinisher class can only be used'
+                            ' with REST PKI 1.11 or later.')
 
-        if not self._token:
-            raise Exception('The token was not set')
-
-        if not self._signature:
-            response = self._client.post(
-                'Api/CadesSignatures/%s/Finalize' % self._token)
-
-            return SignatureResult(
-                self._client,
-                response.get('cms', None),
-                response.get('certificate', None),
-                response.get('callbackArgument', None)
-            )
-
-        else:
-            request = dict()
-            request['signature'] = self._signature
-
-            response = self._client.post(
-                'Api/CadesSignatures/%s/SignedBytes' % self._token,
-                data=request)
-
-            return SignatureResult(
-                self._client,
-                response.get('cms', None),
-                response.get('certificate', None),
-                response.get('callbackArgument', None)
-            )
+    def _get_api_route(self):
+        return 'Api/v2/CadesSignatures/%s/SignedBytes' % self._token
 
 
 __all__ = ['CadesSignatureFinisher']

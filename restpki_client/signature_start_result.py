@@ -1,7 +1,7 @@
 from .pk_certificate import PKCertificate
 
 
-class SignatureStartResult:
+class SignatureStartResult(object):
 
     def __init__(self, token, certificate):
         if certificate is not None:

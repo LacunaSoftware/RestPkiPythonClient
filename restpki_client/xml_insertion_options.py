@@ -1,4 +1,4 @@
-class XmlInsertionOptions:
+class XmlInsertionOptions(object):
     APPEND_CHILD = 'AppendChild'
     PREPEND_CHILD = 'PrependChild'
     APPEND_SIBLING = 'AppendSibling'

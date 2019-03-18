@@ -1,4 +1,4 @@
-class XmlIdResolutionTable:
+class XmlIdResolutionTable(object):
 
     def __init__(self, include_xml_id_attribute=True):
         self._include_xml_id_attribute = include_xml_id_attribute
