@@ -113,7 +113,7 @@ class SignatureExplorer(object):
     def __set_signature_file_base64(self, value):
         if value is None:
             raise Exception('The provided "signature_file_base64" is not valid')
-        self._signature_file_base64 = FileReference.from_content_base64(value)
+        self._signature_file = FileReference.from_content_base64(value)
 
     # endregion
 

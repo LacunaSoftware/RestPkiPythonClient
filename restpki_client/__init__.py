@@ -23,13 +23,17 @@ import restpki_client.oids
 import restpki_client.online_resource_xml_signature_starter
 import restpki_client.pades_horizontal_align
 import restpki_client.pades_measurement_units
+import restpki_client.pades_page_optimization
 import restpki_client.pades_signature
 import restpki_client.pades_signature_explorer
 import restpki_client.pades_signature_finisher
 import restpki_client.pades_signature_starter
 import restpki_client.pades_signer_info
+import restpki_client.pades_size
 import restpki_client.pades_visual_positioning_presets
 import restpki_client.pades_visual_rectangle
+import restpki_client.page_orientations
+import restpki_client.paper_sizes
 import restpki_client.pdf_container_definition
 import restpki_client.pdf_helper
 import restpki_client.pdf_mark
@@ -56,6 +60,7 @@ import restpki_client.rest_unreachable_error
 import restpki_client.signature_algorithm_and_value
 import restpki_client.signature_explorer
 import restpki_client.signature_finisher
+import restpki_client.signature_policy_catalog
 import restpki_client.signature_policy_identifier
 import restpki_client.signature_result
 import restpki_client.signature_start_result
@@ -101,14 +106,18 @@ from restpki_client.online_resource_xml_signature_starter \
     import OnlineResourceXmlSignatureStarter
 from restpki_client.pades_horizontal_align import PadesHorizontalAlign
 from restpki_client.pades_measurement_units import PadesMeasurementUnits
+from restpki_client.pades_page_optimization import PadesPageOptimization
 from restpki_client.pades_signature import PadesSignature
 from restpki_client.pades_signature_explorer import PadesSignatureExplorer
 from restpki_client.pades_signature_finisher import PadesSignatureFinisher
 from restpki_client.pades_signature_starter import PadesSignatureStarter
 from restpki_client.pades_signer_info import PadesSignerInfo
+from restpki_client.pades_size import PadesSize
 from restpki_client.pades_visual_positioning_presets \
     import PadesVisualPositioningPresets
 from restpki_client.pades_visual_rectangle import PadesVisualRectangle
+from restpki_client.page_orientations import PageOrientations
+from restpki_client.paper_sizes import PaperSizes
 from restpki_client.pdf_container_definition import PdfContainerDefinition
 from restpki_client.pdf_helper import PdfHelper
 from restpki_client.pdf_mark import PdfMark
@@ -144,6 +153,7 @@ from restpki_client.signature_algorithm_and_value \
     import SignatureAlgorithmAndValue
 from restpki_client.signature_explorer import SignatureExplorer
 from restpki_client.signature_finisher import SignatureFinisher
+from restpki_client.signature_policy_catalog import SignaturePolicyCatalog
 from restpki_client.signature_policy_identifier import SignaturePolicyIdentifier
 from restpki_client.signature_result import SignatureResult
 from restpki_client.signature_start_result import SignatureStartResult
@@ -182,13 +192,17 @@ __all__ += restpki_client.oids.__all__
 __all__ += restpki_client.online_resource_xml_signature_starter.__all__
 __all__ += restpki_client.pades_horizontal_align.__all__
 __all__ += restpki_client.pades_measurement_units.__all__
+__all__ += restpki_client.pades_page_optimization.__all__
 __all__ += restpki_client.pades_signature.__all__
 __all__ += restpki_client.pades_signature_explorer.__all__
 __all__ += restpki_client.pades_signature_finisher.__all__
 __all__ += restpki_client.pades_signature_starter.__all__
 __all__ += restpki_client.pades_signer_info.__all__
+__all__ += restpki_client.pades_size.__all__
 __all__ += restpki_client.pades_visual_positioning_presets.__all__
 __all__ += restpki_client.pades_visual_rectangle.__all__
+__all__ += restpki_client.page_orientations.__all__
+__all__ += restpki_client.paper_sizes.__all__
 __all__ += restpki_client.pdf_container_definition.__all__
 __all__ += restpki_client.pdf_helper.__all__
 __all__ += restpki_client.pdf_mark.__all__
@@ -215,6 +229,7 @@ __all__ += restpki_client.rest_unreachable_error.__all__
 __all__ += restpki_client.signature_algorithm_and_value.__all__
 __all__ += restpki_client.signature_explorer.__all__
 __all__ += restpki_client.signature_finisher.__all__
+__all__ += restpki_client.signature_policy_catalog.__all__
 __all__ += restpki_client.signature_policy_identifier.__all__
 __all__ += restpki_client.signature_result.__all__
 __all__ += restpki_client.signature_start_result.__all__

@@ -1,7 +1,7 @@
 class RestBaseError(Exception):
 
     def __init__(self, name, message, verb, url):
-        Exception.__init__(self, message)
+        super(RestBaseError, self).__init__(message)
         self._name = name
         self._verb = verb
         self._url = url

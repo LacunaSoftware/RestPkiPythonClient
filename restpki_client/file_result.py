@@ -24,7 +24,8 @@ class FileResult(object):
 
     def open(self, buff_size=4096):
         content_base64 = self.__file.get('content')
-        content_raw = _base64_decode(content_base64)
+        content_raw = _base64_decode(content_base64)\
+            if content_base64 is not None else None
         if content_raw is not None:
             stream = _get_raw_stream(content_raw)
         else:
@@ -37,7 +38,8 @@ class FileResult(object):
 
     def write_to(self, f_out, offset=0, from_where=0, buff_size=4096):
         content_base64 = self.__file.get('content')
-        content_raw = _base64_decode(content_base64)
+        content_raw = _base64_decode(content_base64)\
+            if content_base64 is not None else None
         if content_raw is not None:
             f_in = self.open()
             _copy_stream(f_in, f_out, offset, from_where, buff_size)
@@ -50,7 +52,8 @@ class FileResult(object):
 
     def write_to_file(self, path, offset=0, from_where=0, buff_size=4096):
         content_base64 = self.__file.get('content')
-        content_raw = _base64_decode(content_base64)
+        content_raw = _base64_decode(content_base64)\
+            if content_base64 is not None else None
         with open(path, 'wb') as f_out:
             if content_raw is not None:
                 f_in = self.open()

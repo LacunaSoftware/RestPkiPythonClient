@@ -89,7 +89,7 @@ class CadesSignerInfo(object):
         if signing_time is not None:
             # Parse date string from ISO 8601 pattern.
             # Partial solution:
-            # - return a datetime without timezone information.
+            # - Return a datetime without timezone information.
             # Reason:
             # - Python doesn't have a good support for parsing string with
             # timezone.

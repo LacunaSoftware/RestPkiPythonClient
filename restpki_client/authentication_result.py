@@ -5,32 +5,31 @@ from .validation import ValidationResults
 class AuthenticationResult(object):
 
     def __init__(self, model):
-        self._certificate = None
-        self._validation_results = None
-
+        self.__certificate = None
         certificate = model.get('certificate', None)
-        validation_results = model.get('validationResults', None)
         if certificate is not None:
-            self._certificate = PKCertificate(certificate)
+            self.__certificate = PKCertificate(certificate)
 
+        self.__validation_results = None
+        validation_results = model.get('validationResults', None)
         if validation_results is not None:
-            self._validation_results = ValidationResults(validation_results)
+            self.__validation_results = ValidationResults(validation_results)
 
     @property
     def certificate(self):
-        return self._certificate
+        return self.__certificate
 
     @certificate.setter
     def certificate(self, value):
-        self._certificate = value
+        self.__certificate = value
 
     @property
     def validation_results(self):
-        return self._validation_results
+        return self.__validation_results
 
     @validation_results.setter
     def validation_results(self, value):
-        self._validation_results = value
+        self.__validation_results = value
 
 
 __all__ = ['AuthenticationResult']

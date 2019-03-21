@@ -86,7 +86,12 @@ class FileReference(object):
         return self.__get_content_base64()
 
     def __get_content_base64(self):
-        return self.__content_base64
+        if self.__content_base64 is not None:
+            return self.__content_base64
+        if self.__content_raw is not None:
+            return _base64_encode_string(self.__content_raw)
+        content_raw = self.__open_or_use_existing_stream(lambda s: s.read())
+        return _base64_encode_string(content_raw)
 
     @content_base64.setter
     def content_base64(self, value):
@@ -106,7 +111,11 @@ class FileReference(object):
         return self.__get_content_raw()
 
     def __get_content_raw(self):
-        return self.__content_raw
+        if self.__content_raw is not None:
+            return self.__content_raw
+        if self.__content_base64 is not None:
+            return _base64_encode_string(self.__content_base64)
+        return self.__open_or_use_existing_stream(lambda s: s.read())
 
     @content_raw.setter
     def content_raw(self, value):
@@ -176,12 +185,12 @@ class FileReference(object):
                 len(self.__content_raw) < client.multipart_upload_threshold:
             file['content'] = _base64_encode_string(self.__content_raw)
         else:
-            file_desc = self.open_or_use_existing_stream()
-            file_size = FileReference._get_file_size(file_desc)
+            stream = self.__open_or_use_existing_stream()
+            file_size = FileReference._get_file_size(stream)
             if file_size < client.multipart_upload_threshold:
-                file['content'] = _base64_encode_string(file_desc.read())
+                file['content'] = _base64_encode_string(stream.read())
             else:
-                upload_result = client.upload_or_read(file_desc)
+                upload_result = client.upload_or_read(stream)
                 if type(upload_result) == text_type:
                     self.__blob_token = upload_result
                     file['blobToken'] = self.__blob_token
@@ -191,7 +200,7 @@ class FileReference(object):
 
     def compute_data_hashes(self, algorithms):
         data_hashes = []
-        out_most_stream = self.open_or_use_existing_stream()
+        out_most_stream = self.__open_or_use_existing_stream()
         for digest_alg in algorithms:
             hash_func = digest_alg.get_hash_func()
             hash_func.update(out_most_stream.read())
@@ -205,19 +214,27 @@ class FileReference(object):
 
         return data_hashes
 
-    def open_or_use_existing_stream(self):
+    def __open_or_use_existing_stream(self, action=None):
         if self.__file_desc is not None:
-            return self.__file_desc
-        elif self.__content_base64 is not None:
-            mem_stream = BytesIO(_base64_decode(self.__content_base64))
-            return mem_stream
-        elif self.__content_raw is not None:
-            mem_stream = BytesIO(self.__content_raw)
-            return mem_stream
+            stream = self.__file_desc
         elif self.__path is not None:
-            return open(self.__path, 'rb')
+            file_desc = open(self.__path, 'rb')
+            stream = file_desc
+        elif self.__content_base64 is not None:
+            content_raw = _base64_decode(self.__content_base64)
+            stream = BytesIO()
+            stream.write(content_raw)
+            stream.seek(0, 0)
+        elif self.__content_raw is not None:
+            stream = BytesIO()
+            stream.write(self.__content_raw)
+            stream.seek(0, 0)
         else:
-            raise Exception('Bad state. No values were provided.')
+            raise Exception('Invalid operation.')
+
+        if action is not None:
+            return action(stream)
+        return stream
 
 
 __all__ = ['FileReference']

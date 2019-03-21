@@ -1,27 +1,23 @@
-import base64
 import binascii
 
 from .digest_algorithm import DigestAlgorithm
+from .utils import _base64_decode
 
 
 class DigestAlgorithmAndValue(object):
 
     def __init__(self, model):
 
+        self.__value = None
         algorithm = model.get('algorithm', None)
-        if algorithm is None:
-            raise Exception('The algorithm was not set')
+        if algorithm is not None:
+            self.__algorithm = \
+                DigestAlgorithm.get_instance_by_api_model(str(algorithm))
 
+        self.__algorithm = None
         value = model.get('value', None)
-        if value is None:
-            raise Exception('The value was not set')
-
-        self.__algorithm = DigestAlgorithm.get_instance_by_api_model(algorithm)
-        try:
-            raw = base64.standard_b64decode(str(value))
-        except (TypeError, binascii.Error):
-            raise Exception('The provided certificate is not Base64-encoded')
-        self.__value = raw
+        if value is not None:
+            self.__value = _base64_decode(value)
 
     @property
     def algorithm(self):
@@ -41,12 +37,7 @@ class DigestAlgorithmAndValue(object):
 
     @property
     def hex_value(self):
-        hex_val = binascii.hexlify(self.__value)
-        if type(hex_val) is str:
-            return hex_val
-        elif type(hex_val) is bytes or type(hex_val) is bytearray:
-            return hex_val.decode('ascii')
-        return None
+        return binascii.hexlify(self.__value)
 
     @hex_value.setter
     def hex_value(self, value):

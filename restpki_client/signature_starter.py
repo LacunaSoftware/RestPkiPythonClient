@@ -11,6 +11,7 @@ class SignatureStarter(object):
         self._signature_policy_id = None
         self._security_context_id = None
         self._callback_argument = None
+        self._ignore_revocation_status_unknown = None
 
     @property
     def client(self):
@@ -28,24 +29,68 @@ class SignatureStarter(object):
     def signer_certificate(self, value):
         self._signer_certificate = value
 
-    @property
-    def signature_policy(self):
-        return self._signature_policy_id
+    # region "security_context_id" accessors
 
-    @signature_policy.setter
-    def signature_policy(self, value):
-        self._signature_policy_id = value
+    @property
+    def security_context_id(self):
+        return self.__get_security_context_id()
+
+    def __get_security_context_id(self):
+        return self._security_context_id
 
     @property
     def security_context(self):
-        return self._security_context_id
+        return self.__get_security_context_id()
+
+    @security_context_id.setter
+    def security_context_id(self, value):
+        self.__set_security_context_id(value)
+
+    def __set_security_context_id(self, value):
+        if value is None:
+            raise Exception('The provided "security_context_id" is not valid')
+        self._security_context_id = value
 
     @security_context.setter
     def security_context(self, value):
-        self._security_context_id = value
+        self.__set_security_context_id(value)
+
+    # endregion
+
+    # region "signature_policy_id" accessors
+
+    @property
+    def signature_policy_id(self):
+        return self.__get_signature_policy_id()
+
+    def __get_signature_policy_id(self):
+        return self._signature_policy_id
+
+    @property
+    def signature_policy(self):
+        return self.__get_signature_policy_id()
+
+    @signature_policy_id.setter
+    def signature_policy_id(self, value):
+        self.__set_signature_policy_id(value)
+
+    def __set_signature_policy_id(self, value):
+        if value is None:
+            raise Exception('The provided "signature_policy_id" is not valid')
+        self._signature_policy_id = value
+
+    @signature_policy.setter
+    def signature_policy(self, value):
+        self.__set_signature_policy_id(value)
+
+    # endregion
 
     @abstractmethod
-    def start_with_webpki(self):
+    def start(self):
+        pass
+
+    @abstractmethod
+    def start_with_web_pki(self):
         pass
 
 

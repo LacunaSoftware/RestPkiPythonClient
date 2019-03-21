@@ -1,3 +1,5 @@
+from abc import ABCMeta, abstractmethod
+
 from .oids import Oids
 from .digest_algorithm import DigestAlgorithm
 
@@ -27,9 +29,6 @@ class SignatureAlgorithm(object):
     def __eq__(self, instance):
         if instance is None:
             return False
-
-        if self == instance:
-            return True
 
         return self.__oid == instance.oid
 
@@ -147,6 +146,8 @@ class PKAlgorithms(object):
 
 
 class PKAlgorithm(object):
+    __metaclass__ = ABCMeta
+
     RSA = None
 
     def __init__(self, name, oid):
@@ -156,9 +157,6 @@ class PKAlgorithm(object):
     def __eq__(self, instance):
         if instance is None:
             return False
-
-        if self == instance:
-            return True
 
         return self.__oid == instance.oid
 
@@ -212,6 +210,10 @@ class PKAlgorithm(object):
     def oid(self, value):
         self.__oid = value
 
+    @abstractmethod
+    def get_signature_algorithm(self, digest_algorithm):
+        pass
+
 
 class RSASignatureAlgorithm(SignatureAlgorithm):
 
@@ -219,19 +221,19 @@ class RSASignatureAlgorithm(SignatureAlgorithm):
         name = '%s with RSA' % digest_algorithm
         pk_algorithm = PKAlgorithm.RSA
 
-        if digest_algorithm is DigestAlgorithm.MD5:
+        if digest_algorithm == DigestAlgorithm.MD5:
             xml_uri = 'http://www.w3.org/2001/04/xmldsig-more#rsa-md5'
             oid = Oids.MD5_WITH_RSA
-        elif digest_algorithm is DigestAlgorithm.SHA1:
+        elif digest_algorithm == DigestAlgorithm.SHA1:
             xml_uri = 'http://www.w3.org/2000/09/xmldsig#rsa-sha1'
             oid = Oids.SHA1_WITH_RSA
-        elif digest_algorithm is DigestAlgorithm.SHA256:
+        elif digest_algorithm == DigestAlgorithm.SHA256:
             xml_uri = 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256'
             oid = Oids.SHA256_WITH_RSA
-        elif digest_algorithm is DigestAlgorithm.SHA384:
+        elif digest_algorithm == DigestAlgorithm.SHA384:
             xml_uri = 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha384'
             oid = Oids.SHA384_WITH_RSA
-        elif digest_algorithm is DigestAlgorithm.SHA512:
+        elif digest_algorithm == DigestAlgorithm.SHA512:
             xml_uri = 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha512'
             oid = Oids.SHA512_WITH_RSA
         else:
@@ -256,12 +258,11 @@ SignatureAlgorithm.SHA512_WITH_RSA = \
 class RSAPKAlgorithm(PKAlgorithm):
 
     def __init__(self):
-        name = PKAlgorithms.RSA
+        name = 'RSA'
         oid = Oids.RSA
         super(RSAPKAlgorithm, self).__init__(name, oid)
 
-    @staticmethod
-    def get_signature_algorithm(digest_algorithm):
+    def get_signature_algorithm(self, digest_algorithm):
         return RSASignatureAlgorithm(digest_algorithm)
 
 

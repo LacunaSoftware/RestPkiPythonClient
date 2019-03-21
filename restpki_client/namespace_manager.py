@@ -1,22 +1,20 @@
 class NamespaceManager(object):
 
     def __init__(self):
-        self._namespaces = []
+        self.__namespaces = []
 
     @property
     def namespaces(self):
-        return self._namespaces
+        return self.__namespaces
 
     @namespaces.setter
     def namespaces(self, value):
-        self._namespaces = value
+        self.__namespaces = value
 
     def add_namespace(self, prefix, uri):
-        if not prefix or not uri:
-            raise Exception('Prefix and uri parameters can not be null')
-
-        ns = {'prefix': prefix, 'uri': uri}
-        self._namespaces.append(ns)
+        if prefix is None or uri is None:
+            raise Exception('Prefix and uri parameters cannot be None')
+        self.__namespaces.append({'prefix': prefix, 'uri': uri})
 
 
 __all__ = ['NamespaceManager']

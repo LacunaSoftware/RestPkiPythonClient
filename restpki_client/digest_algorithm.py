@@ -1,39 +1,50 @@
+import hashlib
+from abc import ABCMeta
+from abc import abstractmethod
+
+from six import BytesIO
+
+from .enum import Enum
 from .oids import Oids
 
 
-class DigestAlgorithms(object):
-    """
-
-    Definition of
-
-    """
-    MD5 = 'MD5'
-    SHA1 = 'SHA1'
-    SHA256 = 'SHA256'
-    SHA384 = 'SHA384'
-    SHA512 = 'SHA512'
-
-
-class DigestAlgorithm(object):
+class DigestAlgorithms(Enum):
     MD5 = None
     SHA1 = None
     SHA256 = None
     SHA384 = None
     SHA512 = None
+    SHA3_256 = None
 
-    def __init__(self, name, oid, byte_length, api_model, xml_uri):
+
+DigestAlgorithms.MD5 = DigestAlgorithms('MD5')
+DigestAlgorithms.SHA1 = DigestAlgorithms('SHA1')
+DigestAlgorithms.SHA256 = DigestAlgorithms('SHA256')
+DigestAlgorithms.SHA384 = DigestAlgorithms('SHA384')
+DigestAlgorithms.SHA512 = DigestAlgorithms('SHA512')
+DigestAlgorithms.SHA3_256 = DigestAlgorithms('SHA3_256')
+
+
+class DigestAlgorithm(object):
+    __metaclass__ = ABCMeta
+
+    MD5 = None
+    SHA1 = None
+    SHA256 = None
+    SHA384 = None
+    SHA512 = None
+    SHA3_256 = None
+
+    def __init__(self, name, oid, xml_uri, byte_length, api_model):
         self.__name = name
         self.__oid = oid
+        self.__xml_uri = xml_uri
         self.__byte_length = byte_length
         self.__api_model = api_model
-        self.__xml_uri = xml_uri
 
     def __eq__(self, instance):
         if instance is None:
             return False
-
-        if self == instance:
-            return True
 
         return self.__oid == instance.oid
 
@@ -44,7 +55,17 @@ class DigestAlgorithm(object):
             DigestAlgorithm.SHA1,
             DigestAlgorithm.SHA256,
             DigestAlgorithm.SHA384,
-            DigestAlgorithm.SHA512
+            DigestAlgorithm.SHA512,
+            DigestAlgorithm.SHA3_256
+        ]
+
+    @staticmethod
+    def _get_safe_algorithms():
+        return [
+            DigestAlgorithm.SHA256,
+            DigestAlgorithm.SHA384,
+            DigestAlgorithm.SHA512,
+            DigestAlgorithm.SHA3_256
         ]
 
     @staticmethod
@@ -92,48 +113,54 @@ class DigestAlgorithm(object):
             return DigestAlgorithm.SHA384
         elif algorithm == DigestAlgorithms.SHA512:
             return DigestAlgorithm.SHA512
+        elif algorithm == DigestAlgorithms.SHA3_256:
+            return DigestAlgorithm.SHA3_256
         else:
             raise Exception('Unsupported digest algorithm: %s' % algorithm)
 
-    @property
-    def name(self):
-        return self.__name
+    def compute_hash_from_content(self, content, offset=0, count=-1):
+        stream = BytesIO(content)
+        stream.seek(offset, 0)
+        hash_func = self.get_hash_func()
+        hash_func.update(stream.read(count))
+        return hash_func.digest()
 
-    @name.setter
-    def name(self, value):
-        self.__name = value
+    def compute_hash_from_file(self, file_desc, offset=0, count=-1):
+        file_desc.seek(offset, 0)
+        hash_func = self.get_hash_func()
+        hash_func.update(file_desc.read(count))
+        return hash_func.digest()
 
-    @property
-    def oid(self):
-        return self.__oid
-
-    @oid.setter
-    def oid(self, value):
-        self.__oid = value
-
-    @property
-    def byte_length(self):
-        return self.__byte_length
-
-    @byte_length.setter
-    def byte_length(self, value):
-        self.__byte_length = value
+    def check_length(self, digest_value):
+        if len(digest_value) != self.__byte_length:
+            raise Exception('A %s digest should contain %s bytes, but a value '
+                            'with %s bytes was given' % (self.__name,
+                                                         self.__byte_length,
+                                                         len(digest_value)))
 
     @property
     def api_model(self):
         return self.__api_model
 
-    @api_model.setter
-    def api_model(self, value):
-        self.__api_model = value
+    @property
+    def name(self):
+        return self.__name
+
+    @property
+    def oid(self):
+        return self.__oid
+
+    @property
+    def byte_length(self):
+        return self.__byte_length
 
     @property
     def xml_uri(self):
         return self.__xml_uri
 
-    @xml_uri.setter
-    def xml_uri(self, value):
-        self.__xml_uri = value
+    @abstractmethod
+    def get_hash_func(self):
+        pass
 
 
 class MD5DigestAlgorithm(DigestAlgorithm):
@@ -144,8 +171,11 @@ class MD5DigestAlgorithm(DigestAlgorithm):
         byte_length = 16
         api_model = DigestAlgorithms.MD5
         xml_uri = 'http://www.w3.org/2001/04/xmldsig-more#md5'
-        super(MD5DigestAlgorithm, self).__init__(name, oid, byte_length,
-                                                 api_model, xml_uri)
+        super(MD5DigestAlgorithm, self)\
+            .__init__(name, oid, xml_uri, byte_length, api_model)
+
+    def get_hash_func(self):
+        return hashlib.md5()
 
 
 class SHA1DigestAlgorithm(DigestAlgorithm):
@@ -156,8 +186,11 @@ class SHA1DigestAlgorithm(DigestAlgorithm):
         byte_length = 20
         api_model = DigestAlgorithms.SHA1
         xml_uri = 'http://www.w3.org/2000/09/xmldsig#sha1'
-        super(SHA1DigestAlgorithm, self).__init__(name, oid, byte_length,
-                                                  api_model, xml_uri)
+        super(SHA1DigestAlgorithm, self)\
+            .__init__(name, oid, xml_uri, byte_length, api_model)
+
+    def get_hash_func(self):
+        return hashlib.sha1()
 
 
 class SHA256DigestAlgorithm(DigestAlgorithm):
@@ -168,8 +201,11 @@ class SHA256DigestAlgorithm(DigestAlgorithm):
         byte_length = 32
         api_model = DigestAlgorithms.SHA256
         xml_uri = 'http://www.w3.org/2001/04/xmlenc#sha256'
-        super(SHA256DigestAlgorithm, self).__init__(name, oid, byte_length,
-                                                    api_model, xml_uri)
+        super(SHA256DigestAlgorithm, self)\
+            .__init__(name, oid, xml_uri, byte_length, api_model)
+
+    def get_hash_func(self):
+        return hashlib.sha256()
 
 
 class SHA384DigestAlgorithm(DigestAlgorithm):
@@ -180,8 +216,11 @@ class SHA384DigestAlgorithm(DigestAlgorithm):
         byte_length = 48
         api_model = DigestAlgorithms.SHA384
         xml_uri = 'http://www.w3.org/2001/04/xmldsig-more#sha384'
-        super(SHA384DigestAlgorithm, self).__init__(name, oid, byte_length,
-                                                    api_model, xml_uri)
+        super(SHA384DigestAlgorithm, self)\
+            .__init__(name, oid, xml_uri, byte_length, api_model)
+
+    def get_hash_func(self):
+        return hashlib.sha384()
 
 
 class SHA512DigestAlgorithm(DigestAlgorithm):
@@ -192,8 +231,31 @@ class SHA512DigestAlgorithm(DigestAlgorithm):
         byte_length = 64
         api_model = DigestAlgorithms.SHA512
         xml_uri = 'http://www.w3.org/2001/04/xmlenc#sha512'
-        super(SHA512DigestAlgorithm, self).__init__(name, oid, byte_length,
-                                                    api_model, xml_uri)
+        super(SHA512DigestAlgorithm, self)\
+            .__init__(name, oid, xml_uri, byte_length, api_model)
+
+    def get_hash_func(self):
+        return hashlib.sha512()
+
+
+class SHA3DigestAlgorithm(DigestAlgorithm):
+
+    def __init__(self, bit_length):
+        if bit_length == 256:
+            name = 'SHA3-256'
+            oid = Oids.SHA3_256
+            byte_length = bit_length / 8
+            api_model = DigestAlgorithms.SHA3_256
+            xml_uri = 'http://www.w3.org/2007/05/xmldsig-more#sha3-256'
+            # https://tools.ietf.org/html/rfc6931#section-2.1.5
+            super(SHA3DigestAlgorithm, self)\
+                .__init__(name, oid, xml_uri, byte_length, api_model)
+        else:
+            raise Exception('Bit length not supported')
+        self.__bit_length = bit_length
+
+    def get_hash_func(self):
+        return hashlib.sha3_256()
 
 
 DigestAlgorithm.MD5 = MD5DigestAlgorithm()
@@ -201,6 +263,7 @@ DigestAlgorithm.SHA1 = SHA1DigestAlgorithm()
 DigestAlgorithm.SHA256 = SHA256DigestAlgorithm()
 DigestAlgorithm.SHA384 = SHA384DigestAlgorithm()
 DigestAlgorithm.SHA512 = SHA512DigestAlgorithm()
+DigestAlgorithm.SHA3_256 = SHA3DigestAlgorithm(256)
 
 __all__ = [
     'DigestAlgorithms',

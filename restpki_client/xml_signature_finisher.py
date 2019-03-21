@@ -17,16 +17,13 @@ class XmlSignatureFinisher(SignatureFinisher):
                                          self._token)
         else:
             request = {
-                'signature': _base64_encode_string(self._signature) if
-                             self._signature is not None else None
+                'signature': _base64_encode_string(self._signature)
             }
             response = self._client.post('Api/XmlSignatures/%s/SignedBytes' %
                                          self._token)
 
         return SignatureResult(self._client,
-                               {
-                                   'content': response.get('signedXml')
-                               },
+                               {'content': response.get('signedXml')},
                                response.get('certificate', None),
                                response.get('callbackArgument', None))
 

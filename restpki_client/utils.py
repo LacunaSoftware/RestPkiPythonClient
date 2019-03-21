@@ -1,4 +1,5 @@
 import base64
+import binascii
 
 from six import BytesIO
 
@@ -35,10 +36,14 @@ def _base64_url_safe_encode_string(value):
     return None
 
 
-def _base64_decode(base64_value):
-    if base64_value is None:
-        return None
-    return base64.standard_b64decode(base64_value)
+def _base64_decode(value):
+    if value is None:
+        raise Exception('The provided value is not valid')
+    try:
+        raw = base64.standard_b64decode(value)
+    except (TypeError, binascii.Error):
+        raise Exception('The provided certificate is not Base64-encoded')
+    return raw
 
 
 def _copy_stream(src, dst, offset=0, from_where=0, buff_size=4096):

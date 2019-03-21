@@ -8,9 +8,8 @@ from .pades_measurement_units import PadesMeasurementUnits
 class PdfMarker(object):
 
     def __init__(self, client):
-        self._client = client
-        self._file = None
-
+        self.__client = client
+        self.__file = None
         self.__measurement_units = PadesMeasurementUnits.CENTIMETERS
         self.__page_optimization = None
         self.__abort_if_signed = None
@@ -24,7 +23,7 @@ class PdfMarker(object):
         return self.__get_client()
 
     def __get_client(self):
-        return self._client
+        return self.__client
 
     @client.setter
     def client(self, value):
@@ -33,7 +32,7 @@ class PdfMarker(object):
     def __set_client(self, value):
         if value is None:
             raise Exception('The provided "client" is not valid')
-        self._client = value
+        self.__client = value
 
     # endregion
 
@@ -44,7 +43,7 @@ class PdfMarker(object):
         return self.__get_file()
 
     def __get_file(self):
-        return self._file.file_desc
+        return self.__file.file_desc
 
     @file.setter
     def file(self, value):
@@ -53,7 +52,7 @@ class PdfMarker(object):
     def __set_file(self, value):
         if value is None:
             raise Exception('The provided "file" is not valid')
-        self._file = FileReference.from_file(value)
+        self.__file = FileReference.from_file(value)
 
     # endregion
 
@@ -64,7 +63,7 @@ class PdfMarker(object):
         return self.__get_file_path()
 
     def __get_file_path(self):
-        return self._file.path
+        return self.__file.path
 
     @file_path.setter
     def file_path(self, value):
@@ -73,27 +72,27 @@ class PdfMarker(object):
     def __set_file_path(self, value):
         if value is None:
             raise Exception('The provided "file_path" is not valid')
-        self._file = FileReference.from_path(value)
+        self.__file = FileReference.from_path(value)
 
     # endregion
 
-    # region "file_raw" accessors
+    # region "file_content" accessors
 
     @property
-    def file_raw(self):
-        return self.__get_file_raw()
+    def file_content(self):
+        return self.__get_file_content()
 
-    def __get_file_raw(self):
-        return self._file.content_raw
+    def __get_file_content(self):
+        return self.__file.content_raw
 
-    @file_raw.setter
-    def file_raw(self, value):
-        self.__set_file_raw(value)
+    @file_content.setter
+    def file_content(self, value):
+        self.__set_file_content(value)
 
-    def __set_file_raw(self, value):
+    def __set_file_content(self, value):
         if value is None:
-            raise Exception('The provided "file_raw" is not valid')
-        self._file = FileReference.from_content_raw(value)
+            raise Exception('The provided "file_content" is not valid')
+        self.__file = FileReference.from_content_raw(value)
 
     # endregion
 
@@ -104,7 +103,7 @@ class PdfMarker(object):
         return self.__get_file_base64()
 
     def __get_file_base64(self):
-        return self._file.content_base64
+        return self.__file.content_base64
 
     @file_base64.setter
     def file_base64(self, value):
@@ -113,7 +112,7 @@ class PdfMarker(object):
     def __set_file_base64(self, value):
         if value is None:
             raise Exception('The provided "file_base64" is not valid')
-        self._file = FileReference.from_content_raw(value)
+        self.__file = FileReference.from_content_raw(value)
 
     # endregion
 
@@ -124,7 +123,7 @@ class PdfMarker(object):
         return self.__get_file_blob_token()
 
     def __get_file_blob_token(self):
-        return self._file.blob_token
+        return self.__file.blob_token
 
     @file_blob_token.setter
     def file_blob_token(self, value):
@@ -133,7 +132,7 @@ class PdfMarker(object):
     def __set_file_blob_token(self, value):
         if value is None:
             raise Exception('The provided "file_blob_token" is not valid')
-        self._file = FileReference.from_blob(value)
+        self.__file = FileReference.from_blob(value)
 
     # endregion
 
@@ -144,7 +143,7 @@ class PdfMarker(object):
         return self.__get_file_result()
 
     def __get_file_result(self):
-        result = FileResult(self._client, self._file.content_base64)
+        result = FileResult(self.__client, self.__file.content_base64)
         return result
 
     @file_result.setter
@@ -154,7 +153,7 @@ class PdfMarker(object):
     def __set_file_result(self, value):
         if value is None:
             raise Exception('The provided "file_result" is not valid')
-        self._file_result = FileReference.from_result(value)
+        self.__file = FileReference.from_result(value)
 
     # endregion
 
@@ -265,7 +264,7 @@ class PdfMarker(object):
 
     def apply(self):
 
-        api_version = _get_api_version(self._client, Apis.ADD_PDF_MARKS)
+        api_version = _get_api_version(self.__client, Apis.ADD_PDF_MARKS)
         if api_version < 1:
             raise Exception('The PdfMarker class can only be used with '
                             'REST PKI 1.13 or later. Please contact technical '
@@ -275,12 +274,13 @@ class PdfMarker(object):
             'measurementUnits': self.__measurement_units,
             'forceBlobResult': self.__force_blob_result,
             'abortIfSigned': self.__abort_if_signed,
-            'file': self._file.upload_or_reference(self._client),
-            'pageOptimization': self.__page_optimization.to_model() if
-            self.__page_optimization is not None else None
+            'file': self.__file.upload_or_reference(self.__client),
+            'pageOptimization': self.__page_optimization.to_model()
+                                if self.__page_optimization is not None
+                                else None
         }
-        response = self._client.post('Api/Pdf/AddMarks', data=request)
-        return FileResult(self._client, response.get('file', None))
+        response = self.__client.post('Api/Pdf/AddMarks', request)
+        return FileResult(self.__client, response.get('file', None))
 
 
 __all__ = ['PdfMarker']
