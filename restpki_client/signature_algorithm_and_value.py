@@ -1,4 +1,3 @@
-import base64
 import binascii
 
 from .pk_algorithm import SignatureAlgorithm

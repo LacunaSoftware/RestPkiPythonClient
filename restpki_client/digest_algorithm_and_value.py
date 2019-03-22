@@ -8,13 +8,13 @@ class DigestAlgorithmAndValue(object):
 
     def __init__(self, model):
 
-        self.__value = None
+        self.__algorithm = None
         algorithm = model.get('algorithm', None)
         if algorithm is not None:
             self.__algorithm = \
                 DigestAlgorithm.get_instance_by_api_model(str(algorithm))
 
-        self.__algorithm = None
+        self.__value = None
         value = model.get('value', None)
         if value is not None:
             self.__value = _base64_decode(value)

@@ -1,4 +1,5 @@
-from abc import ABCMeta, abstractmethod
+from abc import ABCMeta
+from abc import abstractmethod
 
 from .oids import Oids
 from .digest_algorithm import DigestAlgorithm

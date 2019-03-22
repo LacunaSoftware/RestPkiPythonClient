@@ -1,8 +1,8 @@
-from restpki_client.rest_pki_client import _get_api_version
 from .apis import Apis
 from .file_reference import FileReference
 from .file_result import FileResult
 from .pades_measurement_units import PadesMeasurementUnits
+from .rest_pki_client import _get_api_version
 
 
 class PdfMarker(object):

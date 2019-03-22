@@ -200,17 +200,17 @@ class FileReference(object):
 
     def compute_data_hashes(self, algorithms):
         data_hashes = []
-        out_most_stream = self.__open_or_use_existing_stream()
+        stream = self.__open_or_use_existing_stream()
         for digest_alg in algorithms:
+            stream.seek(0, 0)
             hash_func = digest_alg.get_hash_func()
-            hash_func.update(out_most_stream.read())
+            hash_func.update(stream.read())
             digest = hash_func.digest()
             data_hashes.append({
-                'algorithm': digest_alg.api_model,
+                'algorithm': digest_alg.api_model.value,
                 'value': _base64_encode_string(digest),
                 'hexValue': None
             })
-            out_most_stream = BytesIO(digest)
 
         return data_hashes
 

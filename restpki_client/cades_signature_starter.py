@@ -1,5 +1,3 @@
-import base64
-
 from .apis import Apis
 from .digest_algorithm import DigestAlgorithm
 from .file_reference import FileReference
@@ -269,7 +267,7 @@ class CadesSignatureStarter(SignatureStarter):
         api_version = _get_api_version(self._client, Apis.START_CADES)
         if api_version == 1:
             return self.__start_common_v1()
-        elif api_version == 1:
+        elif api_version == 2:
             return self.__start_common_v2()
         return self.__start_common_v3()
 
