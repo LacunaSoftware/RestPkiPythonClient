@@ -3,21 +3,34 @@ from .pk_certificate import PKCertificate
 
 
 class SignatureResult(FileResult):
-    _certificate = None
-    _callback_argument = None
 
-    def __init__(self, client, file_, certificate, callback_argument=None):
-        FileResult.__init__(self, client, file_)
-        self._certificate = PKCertificate(certificate)
-        self._callback_argument = callback_argument
+    def __init__(self,
+                 client,
+                 file_model,
+                 certificate,
+                 callback_argument=None):
+
+        super(SignatureResult, self).__init__(client, file_model)
+        self.__certificate = None
+        if certificate is not None:
+            self.__certificate = PKCertificate(certificate)
+        self.__callback_argument = callback_argument
 
     @property
     def certificate(self):
-        return self._certificate
+        return self.__certificate
+
+    @certificate.setter
+    def certificate(self, value):
+        self.__certificate = value
 
     @property
     def callback_argument(self):
-        return self._callback_argument
+        return self.__callback_argument
+
+    @callback_argument.setter
+    def callback_argument(self, value):
+        self.__callback_argument = value
 
 
 __all__ = ['SignatureResult']

@@ -1,11 +1,8 @@
-class PadesVisualPositioningPresets:
+class PadesVisualPositioningPresets(object):
     cached_presets = dict()
 
-    def __init__(self):
-        return
-
-    @classmethod
-    def get_footnote(cls, client, page_number=None, rows=None):
+    @staticmethod
+    def get_footnote(client, page_number=None, rows=None):
 
         url_segment = 'Footnote'
         if page_number:
@@ -15,16 +12,15 @@ class PadesVisualPositioningPresets:
             url_segment += '&' if page_number else '?'
             url_segment += 'rows=%s' % rows
 
-        return PadesVisualPositioningPresets._get_preset(client,
-                                                         url_segment)
+        return PadesVisualPositioningPresets.__get_preset(client, url_segment)
 
-    @classmethod
-    def get_new_page(cls, client):
-        return PadesVisualPositioningPresets._get_preset(client,
-                                                         'NewPage')
+    @staticmethod
+    def get_new_page(client):
+        return PadesVisualPositioningPresets.__get_preset(client,
+                                                          'NewPage')
 
-    @classmethod
-    def _get_preset(cls, client, url_segment):
+    @staticmethod
+    def __get_preset(client, url_segment):
         if url_segment in PadesVisualPositioningPresets.cached_presets:
             return PadesVisualPositioningPresets.cached_presets[url_segment]
 
