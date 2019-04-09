@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="restpki-client",
-    version='1.1.0',
+    version='1.1.1',
     author="Ismael Medeiros",
     author_email="IsmaelM@lacunasoftware.com",
     description="Client package for REST PKI",
@@ -30,8 +30,8 @@ setuptools.setup(
         'Topic :: Software Development :: Libraries :: Python Modules'
     ],
     install_requires=[
-        'simplejson==3.8.1',
-        'requests==2.19.1',
-        'six==1.11.0'
+        'simplejson==3.16.0',
+        'requests==2.21.0',
+        'six==1.12.0'
     ],
 )
