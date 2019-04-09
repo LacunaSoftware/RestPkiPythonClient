@@ -3,6 +3,14 @@ class Enum(object):
     def __init__(self, value):
         self.__value = value
 
+    def __eq__(self, instance_or_value):
+        if instance_or_value is None:
+            return False
+
+        if type(instance_or_value) is Enum:
+            return self.__value == instance_or_value.value
+        return self.__value == instance_or_value
+
     # region "value" accessors
 
     @property

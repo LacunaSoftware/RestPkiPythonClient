@@ -1,12 +1,10 @@
 # pylint: disable=missing-docstring
 import hashlib
+import requests
+import simplejson as json
 
 from distutils.version import StrictVersion
 from six import BytesIO
-
-
-import requests
-import simplejson as json
 
 from .apis import Apis
 from .authentication import Authentication

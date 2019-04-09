@@ -1,7 +1,7 @@
 import hashlib
+
 from abc import ABCMeta
 from abc import abstractmethod
-
 from six import BytesIO
 
 from .enum import Enum
