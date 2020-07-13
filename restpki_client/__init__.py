@@ -21,6 +21,7 @@ import restpki_client.name
 import restpki_client.namespace_manager
 import restpki_client.oids
 import restpki_client.online_resource_xml_signature_starter
+import restpki_client.pades_certification_level
 import restpki_client.pades_horizontal_align
 import restpki_client.pades_measurement_units
 import restpki_client.pades_page_optimization
@@ -104,6 +105,7 @@ from restpki_client.namespace_manager import NamespaceManager
 from restpki_client.oids import Oids
 from restpki_client.online_resource_xml_signature_starter \
     import OnlineResourceXmlSignatureStarter
+from restpki_client.pades_certification_level import PadesCertificationLevel
 from restpki_client.pades_horizontal_align import PadesHorizontalAlign
 from restpki_client.pades_measurement_units import PadesMeasurementUnits
 from restpki_client.pades_page_optimization import PadesPageOptimization
@@ -190,6 +192,7 @@ __all__ += restpki_client.name.__all__
 __all__ += restpki_client.namespace_manager.__all__
 __all__ += restpki_client.oids.__all__
 __all__ += restpki_client.online_resource_xml_signature_starter.__all__
+__all__ += restpki_client.pades_certification_level.__all__
 __all__ += restpki_client.pades_horizontal_align.__all__
 __all__ += restpki_client.pades_measurement_units.__all__
 __all__ += restpki_client.pades_page_optimization.__all__
