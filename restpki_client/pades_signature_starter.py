@@ -15,6 +15,8 @@ class PadesSignatureStarter(SignatureStarter):
         self.__measurement_units = None
         self.__page_optimization = None
         self.__visual_representation = None
+        self.__custom_signature_field_name = None
+        self.__certification_level = None
 
     # region "pdf_to_sign" accessors
 
@@ -160,6 +162,22 @@ class PadesSignatureStarter(SignatureStarter):
     def visual_representation(self, value):
         self.__visual_representation = value
 
+    @property
+    def custom_signature_field_name(self):
+        return self.__custom_signature_field_name
+
+    @custom_signature_field_name.setter
+    def custom_signature_field_name(self, value):
+        self.__custom_signature_field_name = value
+
+    @property
+    def certification_level(self):
+        return self.__certification_level
+
+    @certification_level.setter
+    def certification_level(self, value):
+        self.__certification_level = value
+
     def start(self):
         if self._signer_certificate is None:
             raise Exception('The certificate was not set')
@@ -211,7 +229,9 @@ class PadesSignatureStarter(SignatureStarter):
             'pageOptimization': self.__page_optimization.to_model()
                                 if self.__page_optimization is not None
                                 else None,
-            'visualRepresentation': self.__visual_representation
+            'visualRepresentation': self.__visual_representation,
+            'customSignatureFieldName': self.__custom_signature_field_name,
+            'certificationLevel': self.__certification_level
         }
 
 
