@@ -1,8 +1,8 @@
 class PadesCertificationLevel(object):
-    NOT_CERTIFIED = 'not-certified'
-    CERTIFIED_FORM_FILLING = 'certified-form-filling'
-    CERTIFIED_FORM_FILLING_AND_ANNOTATIONS = 'certified-form-filling-annotations'
-    CERTIFIED_NO_CHANGES_ALLOWED = 'certified-no-changes-allowed'
+    NOT_CERTIFIED = 'NotCertified'
+    CERTIFIED_FORM_FILLING = 'CertifiedFormFilling'
+    CERTIFIED_FORM_FILLING_AND_ANNOTATIONS = 'CertifiedFormFillingAndAnnotations'
+    CERTIFIED_NO_CHANGES_ALLOWED = 'CertifiedNoChangesAllowed'
 
 
     def __init__(self):
