@@ -31,7 +31,7 @@ setuptools.setup(
     ],
     install_requires=[
         'simplejson==3.16.0',
-        'requests==2.21.0',
+        'requests>=2.21.0',
         'six==1.12.0'
     ],
 )
