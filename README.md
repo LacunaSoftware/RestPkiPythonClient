@@ -8,7 +8,7 @@ The recommend way to install **Rest PKI Client Lib** is through [PyPi](https://p
 
 Or informing on your project's `requirements.txt` file:
 
-    restpki-client==1.2.0
+    restpki-client==1.2.1
 
 Samples
 -------
