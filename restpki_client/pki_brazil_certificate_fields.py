@@ -2,7 +2,6 @@ import re
 
 
 class PkiBrazilCertificateFields(object):
-
     def __init__(self, model):
         self._certificate_type = model.get('certificateType', None)
         self._cpf = model.get('cpf', None)
@@ -36,10 +35,16 @@ class PkiBrazilCertificateFields(object):
     def cpf_formatted(self):
         if self._cpf is None:
             return ''
+
         if not re.match('^\d{11}$', self._cpf):
             return self._cpf
-        return "%s.%s.%s-%s" % (self._cpf[:3], self._cpf[3:6], self._cpf[6:9],
-                                self._cpf[9:])
+
+        return '%s.%s.%s-%s' % (
+            self._cpf[:3],
+            self._cpf[3:6],
+            self._cpf[6:9],
+            self._cpf[9:],
+        )
 
     @property
     def cnpj(self):
@@ -53,11 +58,18 @@ class PkiBrazilCertificateFields(object):
     def cnpj_formatted(self):
         if self._cnpj is None:
             return ''
-        if not re.match('^\d{14}', self._cnpj):
+
+        if not re.match(r'^[A-Za-z0-9]{12}\d{2}$', self._cnpj):
             return self._cnpj
-        return "%s.%s.%s/%s-%s" % (self._cnpj[:2], self._cnpj[2:5],
-                                   self._cnpj[5:8], self._cnpj[8:12],
-                                   self._cnpj[12:])
+
+        cnpj = self._cnpj.upper()
+        return '%s.%s.%s/%s-%s' % (
+            cnpj[:2],
+            cnpj[2:5],
+            cnpj[5:8],
+            cnpj[8:12],
+            cnpj[12:],
+        )
 
     @property
     def responsavel(self):
