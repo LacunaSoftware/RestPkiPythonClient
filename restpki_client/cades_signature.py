@@ -1,10 +1,13 @@
 from datetime import datetime
 
+from restpki_client.file_reference import FileReference
+
 from .validation import ValidationResults
 from .digest_algorithm_and_value import DigestAlgorithmAndValue
 from .signature_algorithm_and_value import SignatureAlgorithmAndValue
 from .signature_policy_identifier import SignaturePolicyIdentifier
 from .pk_certificate import PKCertificate
+from .signature_b_stamp import SignatureBStamp
 
 
 class CadesSignature(object):
@@ -47,11 +50,43 @@ class CadesSignature(object):
 
 class CadesTimestamp(CadesSignature):
 
-    def __init__(self, model):
-        super(CadesTimestamp, self).__init__(model)
-        self.__gen_time = model.get('genTime', None)
-        self.__serial_number = model.get('serialNumber', None)
-        self.__message_imprint = model.get('messageImprint', None)
+    def __init__(self, data=None):
+        self._gen_time = None
+        self._serial_number = None
+        self._message_imprint = None
+        self._encapsulated_content_type = None
+        self._has_encapsulated_content = None
+        self._signers = None
+        self._encapsulated_content = None
+        self._audit_package = None
+        self._b_stamp = None
+        
+        self.gen_time = data.get('genTime', None)
+        self.serial_number = data.get('serialNumber', None)
+        
+        message_imprint_data = data.get('messageImprint', None)
+        if message_imprint_data is not None:
+            self._message_imprint = DigestAlgorithmAndValue(message_imprint_data)
+
+        self.encapsulated_content_type = data.get('encapsulatedContentType', None)
+        self.has_encapsulated_content = data.get('hasEncapsulatedContent', None)
+
+        signers_data = data.get('signers', None)
+        if signers_data is not None:
+            self._signers = [CadesSignerInfo(signer) for signer in signers_data]
+
+        encapsulated_content_data = data.get('encapsulatedContent', None)
+        if encapsulated_content_data is not None:
+            self._encapsulated_content = FileReference(encapsulated_content_data)
+
+        audit_package_data = data.get('auditPackage', None)
+        if audit_package_data is not None:
+            self._audit_package = FileReference(audit_package_data)
+        
+        b_stamp_data = data.get('bStamp', None)
+        if b_stamp_data is not None:
+            self._b_stamp = SignatureBStamp(b_stamp_data)
+
 
     @property
     def gen_time(self):
@@ -77,7 +112,46 @@ class CadesTimestamp(CadesSignature):
     def message_imprint(self, value):
         self.__message_imprint = value
 
+    @property
+    def encapsulated_content_type(self):
+        return self._encapsulated_content_type
 
+    @encapsulated_content_type.setter
+    def encapsulated_content_type(self, value):
+        self._encapsulated_content_type = FileReference(value) if value is not None else None
+
+    @property
+    def has_encapsulated_content(self):
+        return self._has_encapsulated_content
+
+    @has_encapsulated_content.setter
+    def has_encapsulated_content(self, value):
+        self._has_encapsulated_content = value
+
+    @property
+    def signers(self):
+        return self._signers
+
+    @signers.setter
+    def signers(self, value):
+        self._signers = [CadesSignerInfo(signer) for signer in value] if value is not None else None
+
+    @property
+    def encapsulated_content(self):
+        return self._encapsulated_content
+
+    @encapsulated_content.setter
+    def encapsulated_content(self, value):
+        self._encapsulated_content = FileReference(value) if value is not None else None
+
+    @property
+    def audit_package(self):
+        return self._audit_package
+
+    @audit_package.setter
+    def audit_package(self, value):
+        self._audit_package = FileReference(value) if value is not None else None
+        
 class CadesSignerInfo(object):
 
     def __init__(self, model):
